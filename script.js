@@ -11,9 +11,9 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibmFkaW5lY29uc3VuamkiLCJhIjoiY21rZWU1djI4MDV6N
 // Initialize map and edit to your preference
 const map = new mapboxgl.Map({
     container: 'map', // container id in HTML
-    style: 'mapbox://styles/nadineconsunji/cmkyjcxru008t01s7c1xvf9fr', 
+    style: 'mapbox://styles/nadineconsunji/cmmbdfg9r007x01ryckrx8rx8', 
     center: [-79.37, 43.715],  // starting point, longitude/latitude
-    zoom: 10.3 // starting zoom level
+    zoom: 10.5 // starting zoom level
 });
 
 /*--------------------------------------------------------------------
