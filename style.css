@@ -10,7 +10,7 @@
 /* Formatting the return to original view button */
 .map-search-container {
     position: relative;
-    background: rgba(255, 255, 255, 0.8);
+    background:(rgba(0,0,0,0));
     top: 0;
     left: 0;
     width: 260px;
@@ -21,12 +21,181 @@
 }
 
 #returnbutton {
+    position: relative;
+    margin: 10px 0 10px;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* Format map data container */
+.map-data-container {
+    position: absolute;   
+    top: 90px;           
+    left: 20px;          
+    background: rgba(255, 255, 255, 0.9);
+    width: 260px;
+    padding: 10px;
+    border-radius: 8px;
+    overflow: visible;
+    z-index: 1000;
+}
+
+/* Format dropdown option label and filter map view label*/
+.option-label {
+    font: 20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    width: 95%;
+    padding-bottom: 5px;
+    position: relative;
+    z-index: 1000;
+}
+
+/* Format smaller text */
+.form-check-label {
+    font: 15px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    position: relative;
+    z-index: 1000;
+    padding-bottom: 10px;
+}
+
+/* Format dropdown option in the map data container */
+.form {
+    padding-bottom: 20px;
+    position: relative;
+    z-index: 1000;
+}
+
+/*--------------------------------------------------------------------
+Formatting hexgrid legend
+--------------------------------------------------------------------*/
+/* Formatting placement of the legend */
+#collisions-legend {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 10;
-    background: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+    background-color: rgba(255, 255, 255, 0.7);
+    bottom: 0;
+    right: 0;
+    margin: 0 10px 30px 0; /*top margin, right margin, bottom margin, left margin*/
+    padding: 10px; /*around elements inside of overlay*/
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-width: 250px;
+    z-index: 1000;
+}
+
+/* Format heading */
+#collisions-legendd h4 {
+    margin: 0 0 10px;
+}
+
+/* Format placement of the div from the bottom */
+#collisions-legend div {
+    margin-bottom: 5px;
+}
+
+/* Change font size of ranges in legend */
+#collisions-legend div {
+    font-size: 18px;
+}
+
+#collisions-legend span {
+    display: inline-block;
+    border-radius: 50%; /*curve border to make a circle*/
+    height: 10px; /*size of circle*/
+    width: 10px;
+    margin-right: 5px; /*position of circle*/
+}
+
+/* Add colour to each child div in legend */
+#collisions-legend div:nth-child(2) span {
+    background-color: rgba(0,0,0,0); 
+}
+
+#collisions-legend div:nth-child(3) span {
+    background-color: #fde725; 
+}
+
+#collisions-legend div:nth-child(4) span {
+    background-color: #a0da39; 
+}
+
+#collisions-legend div:nth-child(5) span {
+    background-color: #4ac16d;
+}
+
+#collisions-legend div:nth-child(6) span {
+    background-color: #1fa187;
+}
+
+#collisions-legend div:nth-child(7) span {
+    background-color: #277f8e;
+}
+
+#collisions-legend div:nth-child(8) span {
+    background-color: #365c8d;
+}
+
+#collisions-legend div:nth-child(9) span {
+    background-color: #46327e;
+}
+
+#collisions-legend div:nth-child(10) span {
+    background-color: #440154;
+}
+
+#collisions-legend div:nth-child(11) span {
+    background-color: #FF0000;
+}
+
+/*--------------------------------------------------------------------
+Formatting general legend
+--------------------------------------------------------------------*/
+#general-legend {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.7);
+    bottom: 0;
+    right: 260px;
+    margin: 0 10px 30px 0; /*top margin, right margin, bottom margin, left margin*/
+    padding: 10px; /*around elements inside of overlay*/
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 210px;
+    z-index: 1100;
+}
+
+#general-legend h4 {
+    margin: 0 0 10px;
+}
+
+#general-legend div {
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+/* Change font size of ranges in legend */
+#general-legend {
+    font-size: 18px;
+}
+
+#general-legend span {
+    display: inline-block;
+    border-radius: 50%; /*curve border to make a circle*/
+    height: 10px; /*size of circle*/
+    width: 10px;
+    margin-right: 5px; /*position of circle*/
+}
+
+/* Add line to symbolise Toronto boundary */
+#general-legend div:nth-child(2) span {
+    background-color: #000000; /* set background colour of span */
+    width: 30px;      /* length of line */
+    height: 4px;      /* thickness */
+    border-radius: 2px; /* slight rounding */
+}
+
+/* Add point to symbolise collision locations */
+#general-legend div:nth-child(3) span {
+    background-color: #000000;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
 }

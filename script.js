@@ -11,7 +11,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibmFkaW5lY29uc3VuamkiLCJhIjoiY21rZWU1djI4MDV6N
 // Initialize map and edit to your preference
 const map = new mapboxgl.Map({
     container: 'map', // container id in HTML
-    style: 'mapbox://styles/nadineconsunji/cmkyjcxru008t01s7c1xvf9fr',  // ****ADD MAP STYLE HERE *****
+    style: 'mapbox://styles/nadineconsunji/cmkyjcxru008t01s7c1xvf9fr', 
     center: [-79.37, 43.715],  // starting point, longitude/latitude
     zoom: 10.3 // starting zoom level
 });
@@ -43,7 +43,7 @@ fetch('https://raw.githubusercontent.com/nadineconsunji/ggr472-lab4-main/refs/he
 Step 3: CREATE BOUNDING BOX AND HEXGRID + ADD SOURCES/LAYERS TO MAP
 --------------------------------------------------------------------*/
 map.on('load', () => {
-    // BOUNDING BOX 
+    // ----------------- BOUNDING BOX -----------------
     // create a bounding box around the collision points and store as a variable 
     let envresult = turf.envelope(pedcycgeojson)
     console.log(envresult) // logging envelope result in the console 
@@ -59,16 +59,16 @@ map.on('load', () => {
     // increasing the envelope by 15% to ensure all data points are included later when a hexgrid is made
     let envresultTrans = turf.transformScale (bboxgeojson, 1.15)
 
-    // create the envelope into a bounding box - array of coordinates (need as array coordinates to create a hexgrid)
+    // create the envelope into a bounding box (need as array coordinates to create a hexgrid)
     let bbox = turf.bbox(envresultTrans)
 
-    // HEXGRID 
+    // ----------------- HEXGRID -----------------
     // create hexgrid 
     var cellSide = 2
     var options = {units: "kilometers"}
     let hexgrid = turf.hexGrid(bbox, cellSide, options)
 
-    // AGGREGATE COLLISION DATA PER HEXAGON IN THE HEXGRID 
+    // ----------------- AGGREGATE COLLISION DATA PER HEXAGON IN THE HEXGRID -----------------
     // aggregating point data 
     let collishex = turf.collect(hexgrid, pedcycgeojson, '_id', 'values');
     console.log(collishex)
@@ -83,7 +83,7 @@ map.on('load', () => {
         }
     });
 
-    // ADDING TO MAP
+    // ----------------- ADDING TO MAP -----------------
     // add pedestrian and cyclist collision points using GeoJSON variable
     map.addSource('ped_cyc_col', {
         type: 'geojson',
@@ -136,7 +136,7 @@ map.on('load', () => {
             'fill-outline-color': 'black'
         }
     },
-        'ped_cyc_col-pnts', // Ensures points are layered above lines 
+        'ped_cyc_col-pnts', // Ensures points are layered above hexgrid 
     );
 
     // add Toronto boundary
@@ -155,109 +155,115 @@ map.on('load', () => {
         }
     });
 
-    // ADDING MAP CONTROLS AND INTERACTIVITY
-    // Search control 
-    map.addControl(
-        new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl,
-            countries: "ca" // Limit to Canada only
-            })
-    );
+    // ----------------- ADDING INTERACTIVITY (more interactivity below - needed here to use maxcollis) -----------------
+    // Filter data layer to show selected hexgrids from drop down selection
+    let boundaryvalue;
 
-    // Add zoom and rotation controls to the top left of the map
-    map.addControl(new mapboxgl.NavigationControl());
+    document.getElementById("boundaryfieldset").addEventListener('change',(e) => {   
+        boundaryvalue = document.getElementById('boundary').value;
+        if (boundaryvalue == 'All') {
+            map.setFilter('hexgrid-lines', ['has', 'COUNT']); // Returns all hexagons that have a count (all of them)
+        } else if (boundaryvalue == '10') {
+            map.setFilter('hexgrid-lines', ['>', ['get', 'COUNT'], 10]); // Returns all hexagons with more than 10 collisions 
+        } else if (boundaryvalue == '30') {
+            map.setFilter('hexgrid-lines', ['>', ['get', 'COUNT'], 30]); // Returns all hexagons with more than 30 collisions 
+        } else if (boundaryvalue == '60') {
+            map.setFilter('hexgrid-lines', ['>', ['get', 'COUNT'], 60]); // Returns all hexagons with more than 60 collisions
+        } else if (boundaryvalue == 'Max') {
+            map.setFilter('hexgrid-lines', ['==', ['get', 'COUNT'], maxcollis]); // Returns hexagon with max value of collisions
+        } else {
+            map.setFilter('hexgrid-lines', ['>', ['get', 'COUNT'], 0]);
+        }
+    });
 
-    // Add fullscreen option to the map
-    map.addControl(new mapboxgl.FullscreenControl());
+    // ----------------- ADDING CLICK EVENTS -----------------
+    // When collision is clicked, a pop-up will display the kind of injury at the collision 
+    // Changing mouse to pointer when over bike share layer
+    map.on('mouseenter', 'ped_cyc_col-pnts', () => {
+        map.getCanvas().style.cursor = 'pointer';
+    });
 
-   // Original view button
-    document.getElementById('returnbutton').addEventListener('click', () => {
-        map.flyTo({
-            center: [-79.37, 43.715],
-            zoom: 10.5,
-            essential: true
-        });
+    // Changing mouse to normal cursor when no longer over bike share layer
+    map.on('mouseleave', 'ped_cyc_col-pnts', () => {
+        map.getCanvas().style.cursor = '';
+    });
+
+    // Coding for pop-up when mouse clicks a neighbourhood
+    map.on('click', 'ped_cyc_col-pnts', (e) => {
+        new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML("Injury: " + e.features[0].properties.INJURY)
+            .addTo(map);
     });
 
 });
 
+/*--------------------------------------------------------------------
+Step 4: ADDING MAP CONTROLS 
+--------------------------------------------------------------------*/
+// Search control 
+map.addControl(
+    new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl,
+        countries: "ca", // Limit to Canada only
+        bbox: [-79.621974, 43.590289, -79.122974, 43.837935] // Limit to bounding box
+        })
+);
 
-// // 2) Change display of legend based on check box
-// const legendcheck = document.getElementById('legendcheck');
-// const bikeshareLegend = document.getElementById('bikeshare-legend');
-// const routesLegend = document.getElementById('routes-parking-legend');
+// Add zoom and rotation controls to the top left of the map
+map.addControl(new mapboxgl.NavigationControl());
 
-// bikeshareLegend.style.display = legendcheck.checked ? 'block' : 'none';
-// routesLegend.style.display = legendcheck.checked ? 'block' : 'none';
+// Add fullscreen option to the map
+map.addControl(new mapboxgl.FullscreenControl());
 
-// legendcheck.addEventListener('change', () => {
-//     if (legendcheck.checked) {
-//         bikeshareLegend.style.display = 'block';
-//         routesLegend.style.display = 'block';
-//     } else {
-//         bikeshareLegend.style.display = 'none';
-//         routesLegend.style.display = 'none';
-//     }
-// });
+// Original view button
+document.getElementById('returnbutton').addEventListener('click', () => {
+    console.log('Button clicked!'); // Check if this log appears when the button is clicked
+    map.flyTo({
+        center: [-79.37, 43.715],
+        zoom: 10.3,
+        essential: true
+    });
+});
 
-// // 3) Change display of bike share stations layer based on check box using setLayoutProperty method
-// document.getElementById('layercheck').addEventListener('change', (e) => {
-//     map.setLayoutProperty(
-//         'bikeshare-fill',
-//         'visibility',
-//         e.target.checked ? 'visible' : 'none'
-//     );
-// });
+/*--------------------------------------------------------------------
+Step 5: ADDING MAP INTERACTIVITY
+--------------------------------------------------------------------*/
 
-// // 4) Filter data layer to show selected neighbourhood near UofT from dropdown selection
-// let boundaryvalue;
+// Change display of legend based on check box
+const legendcheck = document.getElementById('legendcheck');
+const hexgridLegend = document.getElementById('collisions-legend');
+const generalLegend = document.getElementById('general-legend');
 
-// document.getElementById("boundaryfieldset").addEventListener('change',(e) => {   
-//     boundaryvalue = document.getElementById('boundary').value;
+hexgridLegend.style.display = legendcheck.checked ? 'block' : 'none';
+generalLegend.style.display = legendcheck.checked ? 'block' : 'none';
 
-//     if (boundaryvalue == 'All') {
-//         map.setFilter(
-//             'bikeshare-fill',
-//             ['has', 'AREA_NAME'] // Returns all polygons from layer that have a value in AREA_NAME field
-//         );
-//     } else {
-//         map.setFilter(
-//             'bikeshare-fill',
-//             ['==', ['get', 'AREA_NAME'], boundaryvalue] // returns polygon with AREA_NAME value that matches dropdown selection
-//         );
-//     }
+legendcheck.addEventListener('change', () => {
+    if (legendcheck.checked) {
+        hexgridLegend.style.display = 'block';
+        generalLegend.style.display = 'block';
+    } else {
+        hexgridLegend.style.display = 'none';
+        generalLegend.style.display = 'none';
+    }
+});
 
-// });
+// Change display of hexgrid layer based on check box using setLayoutProperty method
+document.getElementById('layercheck').addEventListener('change', (e) => {
+    map.setLayoutProperty(
+        'hexgrid-lines',
+        'visibility',
+        e.target.checked ? 'visible' : 'none'
+    );
+});
 
-// /*--------------------------------------------------------------------
-// Adding click events (when neighbourhood is clicked, a pop-up will display its name)
-// --------------------------------------------------------------------*/
-// map.on('load', () => {
-//     // Changing mouse to pointer when over bike share layer
-//     map.on('mouseenter', 'bikeshare-fill', () => {
-//         map.getCanvas().style.cursor = 'pointer';
-//     });
-
-//     // Changing mouse to normal cursor when no longer over bike share layer
-//     map.on('mouseleave', 'bikeshare-fill', () => {
-//         map.getCanvas().style.cursor = '';
-//     });
-
-//     // Coding for pop-up when mouse clicks a neighbourhood
-//     map.on('click', 'bikeshare-fill', (e) => {
-//         new mapboxgl.Popup()
-//             .setLngLat(e.lngLat)
-//             .setHTML("Neighbourhood: " + e.features[0].properties.AREA_NAME)
-//             .addTo(map);
-//     });
-
-// });
-// // HINT: Think about the display of your data and usability of your web map.
-// //      Update the addlayer paint properties for your hexgrid using:
-// //        - an expression
-// //        - The COUNT attribute
-// //        - The maximum number of collisions found in a hexagon
-// //      Add a legend and additional functionality including pop-up windows
-
+// Change display of collisions points layer based on check box 
+document.getElementById('layercheck2').addEventListener('change', (e) => {
+    map.setLayoutProperty(
+        'ped_cyc_col-pnts',
+        'visibility',
+        e.target.checked ? 'visible' : 'none'
+    );
+});
 

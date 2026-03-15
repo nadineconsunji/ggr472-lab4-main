@@ -1,23 +1,18 @@
-# GGR472 Lab 4: Incorporating GIS analysis into web maps using Turf.js
- 
-This repository contains the starter code required to complete Lab 4. The lab is designed to help you learn how to perform spatial analysis and visualize outputs using the [Turf.js](https://turfjs.org/) and [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/) libraries.
-
+## GGR472 Lab 4
 
 ## Repository Contents
-- `data/pedcyc_collision_06-21.geojson`: Data file containing point locations of road collisions involving pedestrian and cyclists between 2006 and 2021 in Toronto 
-- `instructions/GGR472_Lab4`: Instructions document explaining steps required to complete the lab
-- `index.html`: HTML file to render the map
-- `style.css`: CSS file for positioning the map interface
-- `script.js`: JavaScript file template to be updated to include code that creates and visualizes and hexgrid map based on the collision data
-   
 
-## Getting started
+This repository contains code for a web map and GeoJSON data layers. 
 
-To get started with the lab:
+- `index.html`: HTML file to render the main webpage and map 
+- `style.css`: CSS file for positioning the map interface and map elements
+- `script.js`: JavaScript file containing code for adding elements to the map
 
-1. Download this repository to your local machine
-2. Update the public access token and basemap in `script.js`
-3. Open `index.html` in a web browser to view the map
-4. Create a new online repository containing your own files
-2. Work through the `instructions/GGR472_Lab4` instructions document to incrementally develop the `script.js` file
+#### Purpose 
+More broadly, lab 4 aimed to build off of previous labs' work and develop our knowledge and skills for future application in our group projects. The specific goal was to learn how to perform spatial analysis and visualise outputs using the Turf.js](https://turfjs.org/) and [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/) libraries in the context of pedestrian/cyclist related road collisions in Toronto. 
 
+#### The Map
+This project maps the location of pedestrian/cyclist related road collisions in Toronto as well as them number of these collisions aggregated using a hexagonal grid (where the length of the side of each hexagon is 2km). Additionally, when you click on a collision point, it will display what type of injury occurred at that location. Viewers can also use the dropdown menu on the left-hand side to select areas with a particular amount of collisions recorded, including the area where the most amount of collisions were recorded. 
+
+#### Files and Data Sources
+Raw GEOJson data files can be found in the "Data" folder. These were sourced from both myself and the City of Toronto's Open Data Portal. 
