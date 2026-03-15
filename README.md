@@ -15,4 +15,6 @@ More broadly, lab 4 aimed to build off of previous labs' work and develop our kn
 This project maps the location of pedestrian/cyclist related road collisions in Toronto as well as them number of these collisions aggregated using a hexagonal grid (where the length of the side of each hexagon is 2km). Additionally, when you click on a collision point, it will display what type of injury occurred at that location. Viewers can also use the dropdown menu on the left-hand side to select areas with a particular amount of collisions recorded, including the area where the most amount of collisions were recorded. 
 
 #### Files and Data Sources
-Raw GEOJson data files can be found in the "Data" folder. These were sourced from both myself and the City of Toronto's Open Data Portal. 
+Raw GEOJson data files can be found in the "Data" folder. These were sourced from both myself and the City of Toronto's Open Data Portal.
+
+The final webpage can be found here: https://nadineconsunji.github.io/ggr472-lab4-main/

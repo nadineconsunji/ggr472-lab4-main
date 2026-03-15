@@ -23,7 +23,7 @@ Step 2: CREATE GEOJSON VARIABLE FOR POINT DATA ON MAP
 let pedcycgeojson;
 
 // fetch collision GeoJSON from URL and store response
-fetch('https://raw.githubusercontent.com/nadineconsunji/ggr472-lab4-main/main/data/pedcyc_collision_06-21.geojson')
+fetch('data/pedcyc_collision_06-21.geojson')
     .then(response => response.json()) // convert response to JSON format 
     .then(response => {
         console.log(response); // Check response in console
@@ -32,7 +32,7 @@ fetch('https://raw.githubusercontent.com/nadineconsunji/ggr472-lab4-main/main/da
 
 let torontoboundary;
 // fetch Toronto boundary shapefile form URL and store response
-fetch('https://raw.githubusercontent.com/nadineconsunji/ggr472-lab4-main/refs/heads/main/data/toronto.geojson')
+fetch('data/toronto.geojson')
     .then(response => response.json()) // convert response to JSON format 
     .then(response => {
         console.log(response); // Check response in console
